@@ -105,6 +105,12 @@ module Annotator
         create_term_cache_from_ontologies(ontologies, delete_cache, redis_prefix)
       end
 
+      # A little method to remove all accent before putting the words in the dictionary file used by mgrep
+      def remove_accent(val)
+        val = val.gsub(/[éèêë]/, "E").gsub(/[àâäã]/, "A").gsub(/[ùúûü]/, "U").gsub(/[ôóõö]/, "O").gsub(/[îïíì]/, "I").gsub("ç", "C").gsub("ñ", "N")
+        return val
+      end
+
       def generate_dictionary_file()
         if Annotator.settings.mgrep_dictionary_file.nil?
           raise Exception, "mgrep_dictionary_file setting is nil"
@@ -129,7 +135,7 @@ module Annotator
         all.each do |key, val|
           realKey = key.sub prefix_remove, ''
           realVal = val.gsub(windows_linebreak_remove, ' ').gsub(special_remove, ' ')
-          realVal = val.gsub("è", "E").gsub("é", "E").gsub("ê", "E").gsub("à", "A").gsub("ô", "O").gsub("ù", "U")
+          realVal = remove_accent(realVal)
           outFile.puts("#{realKey}\t#{realVal}")
         end
         outFile.close
