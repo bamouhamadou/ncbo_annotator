@@ -129,6 +129,7 @@ module Annotator
         all.each do |key, val|
           realKey = key.sub prefix_remove, ''
           realVal = val.gsub(windows_linebreak_remove, ' ').gsub(special_remove, ' ')
+          realVal = val.gsub("è", "E").gsub("é", "E").gsub("ê", "E").gsub("à", "A").gsub("ô", "O").gsub("ù", "U")
           outFile.puts("#{realKey}\t#{realVal}")
         end
         outFile.close
