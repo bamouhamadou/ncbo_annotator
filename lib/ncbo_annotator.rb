@@ -26,6 +26,7 @@ module Annotator
     class NcboAnnotator
       class BadSemanticTypeError < StandardError; end
 
+      require_relative 'ncbo_annotator/recognizers/alvis'
       require_relative 'ncbo_annotator/recognizers/mallet'
       require_relative 'ncbo_annotator/recognizers/mgrep'
 
