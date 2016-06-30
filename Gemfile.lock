@@ -1,21 +1,5 @@
 GIT
-  remote: git://github.com/ncbo/goo.git
-  revision: 1ed644e3b969d9edfa71caab861900135dc86fee
-  branch: master
-  specs:
-    goo (0.0.2)
-      addressable (= 2.3.5)
-      pry
-      rdf (= 1.0.8)
-      redis
-      rest-client
-      rsolr
-      sparql-client
-      systemu
-      uuid
-
-GIT
-  remote: git://github.com/ncbo/ontologies_linked_data.git
+  remote: git://github.com/agroportal/ontologies_linked_data.git
   revision: f999961ee41d3fe274e7ac8fe12d9f81d9270d5a
   branch: hack-14
   specs:
@@ -33,6 +17,22 @@ GIT
       rack-test
       rsolr
       rubyzip
+
+GIT
+  remote: git://github.com/ncbo/goo.git
+  revision: 1ed644e3b969d9edfa71caab861900135dc86fee
+  branch: master
+  specs:
+    goo (0.0.2)
+      addressable (= 2.3.5)
+      pry
+      rdf (= 1.0.8)
+      redis
+      rest-client
+      rsolr
+      sparql-client
+      systemu
+      uuid
 
 GIT
   remote: git://github.com/ncbo/resource_index.git
