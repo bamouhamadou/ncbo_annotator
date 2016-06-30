@@ -15,9 +15,11 @@ module Annotator
 
           allAnnotations = {}
 
+          # Get results of alvis in the Hash {:id, :from, :to, :match}
+          rawAnnotations = [{:id => "-4195353038606669928", :from => "1", :to => "8", :match => "ce qui match"}]
+
           redis_data = Hash.new
           cur_inst = redis_current_instance()
-          rawAnnotations = [{:id => "-4195353038606669928", :from => "1", :to => "8", :match => "ce qui match"}]
 
           # Get redis_data
           redis.pipelined {
@@ -49,6 +51,7 @@ module Annotator
               # check that class semantic types contain at least one requested semantic type
               next if !semantic_types.empty? && (semantic_types & classSemanticTypes).empty?
 
+              # Iterate over vals in match (ontology id, PREF or synonym...)
               allVals.each do |eachVal|
                 typeAndOnt = eachVal.split(LABEL_DELIM)
                 recordType = typeAndOnt[0]
@@ -64,11 +67,11 @@ module Annotator
                 allAnnotations[id_group].add_annotation(ann[:from], ann[:to], typeAndOnt[0], ann[:match])
 
               end
-              puts "vals #{allAnnotations}"
             end
           end
 
-          #allAnnotations[concat_concept_ont] = Annotation.new(concept_id, ont_id)
+          # Building annotations:
+          #allAnnotations[concat_conceptId_ontId] = Annotation.new(concept_id, ont_id)
 
           return allAnnotations
         end
