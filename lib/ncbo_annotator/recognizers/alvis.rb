@@ -2,6 +2,39 @@ module Annotator
   module Models
     module Recognizers
       class Alvis < Annotator::Models::NcboAnnotator
+        
+        def initialize
+          super()
+          @alvis_path = $ncbo_annotator_project_bin + "alvisnlp.jar" # a voir
+          @result_file = $ncbo_annotator_project_bin + "result.txt" # a voir
+        end
+        
+        def alvis_java_call(text, params="")
+          
+          params_str = "params \"\""
+          params_str = "params \"#{Shellwords.escape(params)}\"" unless params.empty?
+          #command_call = "java -cp \"#{$ncbo_annotator_project_bin}.:#{$ncbo_annotator_project_bin}*\" BasicClassifier string \"#{Shellwords.escape(text)}\" #{params_str}"
+          stdout, stderr, status = Open3.capture3(command_call)
+
+          if not status.success?
+            @logger.error("Error executing Alvis recognizer")
+            @logger.error(stderr)
+            @logger.error(stdout)
+            raise Exception, "Alvis java command exited with #{status.exitstatus}. Check the log for a more detailed description of the error."
+          end
+
+          #return stderr
+        end
+        
+        def getResults()
+          file = File.new(file_path, "r")
+          
+          if file
+           # get data
+          else
+            puts "Unable to open file!"
+          end
+        end
 
         def annotate_direct(text, options={})
           ontologies = options[:ontologies].is_a?(Array) ? options[:ontologies] : []
