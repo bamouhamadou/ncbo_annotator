@@ -14,7 +14,6 @@ module Annotator
           longest_only = options[:longest_only] == true ? true : false
 
           allAnnotations = {}
-          flattenedAnnotations = Array.new
 
           redis_data = Hash.new
           cur_inst = redis_current_instance()
@@ -58,49 +57,14 @@ module Annotator
                 acronym = ontResourceId.to_s.split('/')[-1]
                 next if !ontologies.empty? && !ontologies.include?(ontResourceId) && !ontologies.include?(acronym)
 
-                if (longest_only)
-                  annotation = Annotation.new(key, ontResourceId)
-                  annotation.add_annotation(ann[:from], ann[:to], typeAndOnt[0], ann[:match])
-                  flattenedAnnotations << annotation
-                else
-                  id_group = ontResourceId + key
-
-                  unless allAnnotations.include?(id_group)
-                    allAnnotations[id_group] = Annotation.new(key, ontResourceId)
-                  end
-                  allAnnotations[id_group].add_annotation(ann[:from], ann[:to], typeAndOnt[0], ann[:match])
+                id_group = ontResourceId + key
+                unless allAnnotations.include?(id_group)
+                  allAnnotations[id_group] = Annotation.new(key, ontResourceId)
                 end
+                allAnnotations[id_group].add_annotation(ann[:from], ann[:to], typeAndOnt[0], ann[:match])
+
               end
               puts "vals #{allAnnotations}"
-            end
-          end
-
-          if (longest_only)
-            flattenedAnnotations.sort! {|a, b| [a.annotations[0][:from], b.annotations[0][:to]] <=> [b.annotations[0][:from], a.annotations[0][:to]]}
-            cur_min = 0;
-            cur_max = 0;
-
-            flattenedAnnotations.delete_if { |annotation|
-              flag = true
-              new_min = annotation.annotations[0][:from]
-              new_max = annotation.annotations[0][:to]
-
-              if (new_max > cur_max || (cur_min == new_min && cur_max == new_max))
-                flag = false
-                cur_min = new_min
-                cur_max = new_max
-              end
-              flag
-            }
-
-            flattenedAnnotations.each do |annotation|
-              id_group = annotation.annotatedClass.submission.ontology.id.to_s + annotation.annotatedClass.id.to_s
-
-              if allAnnotations.include?(id_group)
-                allAnnotations[id_group].add_annotation(annotation.annotations[0][:from], annotation.annotations[0][:to], annotation.annotations[0][:matchType], annotation.annotations[0][:text])
-              else
-                allAnnotations[id_group] = annotation
-              end
             end
           end
 
